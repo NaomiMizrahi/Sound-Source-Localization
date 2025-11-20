@@ -17,8 +17,8 @@ Paths:
 # MODE FLAGS
 # ------------------------------------------------------------
 Mode:
-  Simulation: False      # run pyroomacoustics simulation
-  STFT: False            # compute STFT segments
+  Simulation: True      # run pyroomacoustics simulation
+  STFT: True            # compute STFT segments
   Train: True            # train model
   Evaluate: True         # evaluate final model
 

@@ -1,0 +1,82 @@
+# ============================================================
+# Acoustic Scene Classification Pipeline Configuration
+# ============================================================
+
+# ------------------------------------------------------------
+# PATHS
+# All paths are relative to the project root (same folder as run_experiment.py)
+# ------------------------------------------------------------
+Paths:
+  CleanPath: "data/raw/clean_speech"          # folder of speech files
+  NoisePath: "data/raw/noise"                 # folder of noise files
+  SimulatedPath: "data/processed/simulated_room"   # where simulated WAVs go
+  STFTPath: "data/processed/simulated_room_stft"   # where .pt segments go
+  ResultsPath: "outputs"                           # root for results
+
+# ------------------------------------------------------------
+# MODE FLAGS
+# ------------------------------------------------------------
+Mode:
+  Simulation: False      # run pyroomacoustics simulation
+  STFT: False            # compute STFT segments
+  Train: True            # train model
+  Evaluate: True         # evaluate final model
+
+# ------------------------------------------------------------
+# SIMULATION PARAMETERS
+# Used only if Mode.Simulation = true
+# ------------------------------------------------------------
+SimulationParam:
+  SampleRate: 16000
+  NumMics: 8
+  MaxOrder: 1
+  Humidity: 25
+  SNRRange: [5, 15]
+  RT60: 0.5                   # allowed: 0.5 / 0.7 / 0.9 (based on your script)
+
+# ------------------------------------------------------------
+# STFT PARAMETERS
+# ------------------------------------------------------------
+STFTParam:
+  SegLen: 25                  # number of frames per segment
+  n_fft: 1024
+  hop_length: 512
+  SampleRate: 16000
+
+# ------------------------------------------------------------
+# MODEL PARAMETERS
+# ------------------------------------------------------------
+ModelParam:
+  ExperimentName: "ACS_LSTM"     # folder under ResultsPath
+  GPUNum: 0                      # which GPU to use
+
+# ------------------------------------------------------------
+# TRAINING PARAMETERS
+# ------------------------------------------------------------
+TrainParam:
+
+  # --------- MODEL SELECTION ----------
+  model: "lstm"                # lstm OR transformer_lstm
+  num_chnls: 16                # 2*NumMics → if 8 mics → 16 channels
+  num_classes: 4               # desk/carpet/sofa/other
+
+  # --------- TRAINING ----------
+  BatchSize: 64
+  Epochs: 20
+  LearningRate: 0.001
+
+  # Dataloader settings
+  TrainRatio: 0.8              # used only in single-directory mode
+  NumWorkers: 4
+  PinMemory: True
+
+  # --------- HYPERPARAMETER SEARCH ----------
+  HyperTune: True
+  NumFolds: 3                   # for k-fold CV
+
+  # Search space (used only if HyperTune=True)
+  HyperParamSpace:
+    BatchSize: [32, 64]
+    LearningRate: [0.001, 0.0005]
+    Epochs: [10, 20]
+

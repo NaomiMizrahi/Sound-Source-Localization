@@ -30,7 +30,7 @@ Room Simulation -> STFT Segmentation -> Dataset -> Training -> Evaluation
 
 To run the full pipeline:
 ```
-python run_experiment.py -c configs/Param_ACS.yaml
+python src/run_experiment.py -c src/configs/Param_ACS.yaml
 ```
 
 # Model Architectures
